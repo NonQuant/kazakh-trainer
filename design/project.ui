@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Клавиатурный тренажер</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(56, 56, 56);
+color: white;</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>40</y>
+      <width>751</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="3,1,3">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="generated_text">
+       <property name="font">
+        <font>
+         <family>MS Shell Dlg 2</family>
+         <pointsize>20</pointsize>
+        </font>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(240, 223, 28);
+border-color: rgb(255, 255, 255);
+</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="hint_label">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>21</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>13</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(161, 161, 161);</string>
+       </property>
+       <property name="text">
+        <string>Нажмите Esc чтобы начать заново</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="entered_text">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(73, 220, 0);
+border-color: rgb(255, 255, 0);</string>
+       </property>
+       <property name="html">
+        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Calibri'; font-size:18pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="stopwatch_label">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>0</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(240, 223, 28);</string>
+    </property>
+    <property name="text">
+     <string>00:00</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="username_label">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>10</y>
+      <width>191</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(240, 223, 28);
+</string>
+    </property>
+    <property name="text">
+     <string>Гость</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: white;
+</string>
+   </property>
+   <widget class="QMenu" name="settings_menu">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <widget class="QMenu" name="theme_setting">
+     <property name="title">
+      <string>Тема</string>
+     </property>
+     <addaction name="dark_theme"/>
+     <addaction name="light_theme"/>
+     <addaction name="ocean_theme"/>
+     <addaction name="pastel_theme"/>
+     <addaction name="violet_theme"/>
+     <addaction name="forest_theme"/>
+     <addaction name="glamour_theme"/>
+    </widget>
+    <widget class="QMenu" name="difficulty_setting">
+     <property name="title">
+      <string>Сложность</string>
+     </property>
+     <addaction name="easy_mode"/>
+     <addaction name="normal_mode"/>
+     <addaction name="hard_mode"/>
+    </widget>
+    <widget class="QMenu" name="user_setting">
+     <property name="title">
+      <string>Пользователь</string>
+     </property>
+     <addaction name="register_user"/>
+     <addaction name="login_user"/>
+    </widget>
+    <addaction name="theme_setting"/>
+    <addaction name="difficulty_setting"/>
+    <addaction name="user_setting"/>
+    <addaction name="results_menu"/>
+   </widget>
+   <widget class="QMenu" name="about_menu">
+    <property name="title">
+     <string>Инфо</string>
+    </property>
+    <addaction name="about_project"/>
+   </widget>
+   <addaction name="settings_menu"/>
+   <addaction name="about_menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <action name="dark_theme">
+   <property name="text">
+    <string>Темная (по умолчанию)</string>
+   </property>
+  </action>
+  <action name="light_theme">
+   <property name="text">
+    <string>Светлая</string>
+   </property>
+  </action>
+  <action name="easy_mode">
+   <property name="text">
+    <string>Легкая</string>
+   </property>
+  </action>
+  <action name="normal_mode">
+   <property name="text">
+    <string>Средняя</string>
+   </property>
+  </action>
+  <action name="hard_mode">
+   <property name="text">
+    <string>Сложная</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Безумная</string>
+   </property>
+  </action>
+  <action name="register_user">
+   <property name="text">
+    <string>Регистрация</string>
+   </property>
+  </action>
+  <action name="login_user">
+   <property name="text">
+    <string>Войти</string>
+   </property>
+  </action>
+  <action name="results_menu">
+   <property name="text">
+    <string>Результаты</string>
+   </property>
+  </action>
+  <action name="ocean_theme">
+   <property name="text">
+    <string>Океан</string>
+   </property>
+  </action>
+  <action name="pastel_theme">
+   <property name="text">
+    <string>Сирень</string>
+   </property>
+  </action>
+  <action name="violet_theme">
+   <property name="text">
+    <string>Виолет</string>
+   </property>
+  </action>
+  <action name="forest_theme">
+   <property name="text">
+    <string>Лес</string>
+   </property>
+  </action>
+  <action name="glamour_theme">
+   <property name="text">
+    <string>Гламур</string>
+   </property>
+  </action>
+  <action name="about_us">
+   <property name="text">
+    <string>О разработчиках</string>
+   </property>
+  </action>
+  <action name="about_project">
+   <property name="text">
+    <string>О проекте</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
