@@ -4,7 +4,6 @@ import sys
 import time
 import csv
 import datetime
-from design import about
 from random import choice, randint
 from design.project import Ui_MainWindow
 from design.res_dialog import Ui_Dialog
@@ -21,7 +20,6 @@ if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
 
 if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-
 
 # константы
 DATABASE = "data\\trainer_db.db"
@@ -58,6 +56,13 @@ THEMES = {"dark": (GRAY1, YELLOW), "light": (WHITE, BLUE), "ocean": (OCEAN_BLUE,
           "forest": (FOREST_GREEN, FOREST_BROWN)}
 
 
+def get_pixmap(theme):
+    if theme == "dark":
+        return QPixmap("data\\dark.jpeg")
+    if theme == "gradient":
+        return QPixmap("data\\gradient.jpeg")
+
+
 class RecordingsWindow(QWidget, Ui_Form):
     def __init__(self, user, theme):
         super().__init__()  # конструктор родительского класса
@@ -70,7 +75,7 @@ class RecordingsWindow(QWidget, Ui_Form):
         self.user = user
 
         # столбцы в БД и заголовки для отображаемой таблицы
-        self.titles = ['record_id', 'user', 'data', 'text', 'mode', 'time', 'typing_speed']
+        self.titles = ['Номер записи', 'Пользователь', 'Дата', 'Текст', 'Режим', 'Время', 'Скорость печати']
         self.columns = ['record_id', 'user_id', 'data', 'text_id', 'difficulty_id', 'time', 'typing_speed']
 
         self.change_theme(theme)  # устанавливаем тему
@@ -228,6 +233,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         # Вызываем метод для загрузки интерфейса из класса Ui_MainWindow,
         self.setupUi(self)
+        self.generated_text = ""  # сгенерированный текст
+
+        self.background.setPixmap(get_pixmap("dark"))
+        self.generated_text_html.setPixmap(get_pixmap("dark"))
+        self.generated_text_html.setAttribute(Qt.WA_NoSystemBackground)
+        self.entered_text.setAttribute(Qt.WA_NoSystemBackground)
+        self.hint_label.setAttribute(Qt.WA_NoSystemBackground)
+        self.username_label.setAttribute(Qt.WA_NoSystemBackground)
+        self.stopwatch_label.setAttribute(Qt.WA_NoSystemBackground)
 
         # связываемся с базой данных trainer_db.db
         self.con = sqlite3.connect(DATABASE)
@@ -256,6 +270,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.timeInterval = 100  # интервал вызова секундомера
         self.time_r = 0  # разница между начальным временем и текущем временем. Изначально равен 0
 
+        self.actual_text = ""  # ранее введенный текст
+        self.actual_index = 0  # индекс ранее введенного текста
+
         self.interface_binding()  # привязка частей интерфейса к функциям
 
     # обработчик событий нажатия клавиш и мыши
@@ -270,6 +287,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.load_text(self.difficulty_mode)  # ввести новый текст
         self.entered_text.setText("")  # обнулить вводимый текст
         self.is_program_change = False  # вернуться к исходному значению
+        self.actual_index = 0
+        self.actual_text = ""
 
     # загрузка нового текста со сложностью difficult из таблицы Texts
     def load_text(self, difficult):
@@ -286,9 +305,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # выбирание случайного текста, пока он совпадает с текстом в generated_text
         text = choice(texts)[0]
-        while self.generated_text.text() == text:
+        while self.generated_text == text:
             text = choice(texts)[0]
-        self.generated_text.setText(text)  # вставить новой текст в generated_text
+        self.generated_text = text
+        self.generated_text_html.setTextFormat(Qt.RichText)
+        self.generated_text_html.setText(
+            f"<font color='{BLUE}'>{text.split()[0] + ' '}<font>"
+            f"<font color='{YELLOW}'>{' '.join(text.split()[1:])}<font>")  # вставить новый текст в generated_text
 
     # обработчик события изменения текста
     def text_changed(self):
@@ -302,8 +325,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # запоминаем положение курсора
         cursor = self.entered_text.textCursor()
 
-        generated_text = self.generated_text.text()
+        generated_text = self.generated_text
         entered_text = self.entered_text.toPlainText()
+        if entered_text == "":
+            return
 
         font_size = 4  # размер текста
         is_correct = True  # переменная для отслеживания корректности ввода
@@ -312,6 +337,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # перебор символов в entered_text
         for index, character in enumerate(entered_text):
+            index += self.actual_index
             if index <= len(generated_text) - 1:
                 if generated_text[index] != character:
                     is_correct = False
@@ -319,19 +345,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 is_correct = False
             color = self.correct_color if is_correct else self.incorrect_color
             html += f"<font color='{color}' size = {font_size} >{character}</font>"
-        self.is_program_change = True
+        self.is_program_change = True  # показываем что изменяем программу вручную
         self.entered_text.setHtml(html)
-        self.is_program_change = False
+        self.is_program_change = False  # отключаем режим изменения
 
         # возвращаем курсор на место, так как при setHtml его позиция обнуляется
         self.entered_text.setTextCursor(cursor)
 
+        if is_correct and entered_text[-1] == " " or \
+                is_correct and len(self.actual_text) + len(entered_text) == len(generated_text):
+            self.actual_text += entered_text  # расширяем введенный ранее текст
+            self.actual_index = len(self.actual_text)  # соответственно увеличиваем и индекс введенного текста
+            self.is_program_change = True
+            self.entered_text.setText("")
+            self.is_program_change = False
+
+            self.generated_text_html.setTextFormat(Qt.RichText)
+
+            if self.actual_text != generated_text:
+                written = generated_text[:self.actual_index]
+                next_word = generated_text[self.actual_index:].split()[0] + " "
+                further = " ".join(generated_text[self.actual_index:].split()[1:])
+                self.generated_text_html.setText(
+                    f"<font color='{self.correct_color}'>{written}</font><font color='{YELLOW}'>"
+                    f"<font color='{BLUE}'>{next_word}</font>"
+                    f"<font color='{YELLOW}'>{further}</font>")  # делаем введенное слово из текста зеленым
+
         # если пользователь весь текст правильно, то вызвать функций показа, загрузки записи и начать заново
-        if is_correct and len(entered_text) == len(generated_text):
+        if is_correct and len(self.actual_text) == len(generated_text):
+            self.generated_text_html.setText(f"<font color='self.correct_color'>{generated_text}<font>")
             self.stopwatch.stop()
             self.show_and_load_recording()
             self.start_again()
-
 
     # функция показа и загрузки записи
     def show_and_load_recording(self):
@@ -349,7 +394,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Получение text_id путем запроса из таблицы Texts
         text_id = cur.execute(f"""
             SELECT text_id FROM Texts
-                WHERE text='{self.generated_text.text()}'""").fetchall()[0][0]
+                WHERE text='{self.generated_text}'""").fetchall()[0][0]
 
         # Получение difficulty_id путем запроса из таблицы Texts
         difficulty_id = cur.execute(f"""
@@ -360,7 +405,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         typing_time = self.stopwatch_label.text()
 
         # typing_speed = S / time * 60 сим/мин
-        typing_speed = round(len(self.generated_text.text()) / self.time_r * 60, 1)
+        typing_speed = round(len(self.generated_text) / self.time_r * 60, 1)
 
         # добавляем запись в бд и показываем результат пользователю
         self.load_recording(user_id, data, text_id, difficulty_id, typing_time, typing_speed)
@@ -421,10 +466,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # настройки темы
         self.dark_theme.triggered.connect(lambda: self.change_theme("dark"))
         self.light_theme.triggered.connect(lambda: self.change_theme("light"))
-        self.ocean_theme.triggered.connect(lambda: self.change_theme("ocean"))
-        self.violet_theme.triggered.connect(lambda: self.change_theme("violet"))
-        self.pastel_theme.triggered.connect(lambda: self.change_theme("pastel"))
-        self.forest_theme.triggered.connect(lambda: self.change_theme("forest"))
+        self.ocean_theme.triggered.connect(lambda: self.change_theme("gradient"))
 
         # настройки сложности
         self.easy_mode.triggered.connect(lambda: self.change_difficulty('easy'))
@@ -437,14 +479,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # меню результатов
         self.results_menu.triggered.connect(self.show_recordings)
-
-        # окно о проекте
-        self.about_project.triggered.connect(self.show_about_project_window)
-
-    # функция показа окна про проект
-    def show_about_project_window(self):
-        self.about_project_window = AboutProjectWindow(self.theme)
-        self.about_project_window.show()
 
     # функция показа окна результата
     def show_recordings(self):
@@ -461,8 +495,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.set_light_theme()
         elif theme == "dark":
             self.set_dark_theme()
-        elif theme == "ocean":
-            self.set_ocean_theme()
+        elif theme == "gradient":
+            self.set_gradient_theme()
         elif theme == "violet":
             self.set_violet_theme()
         elif theme == "pastel":
@@ -476,7 +510,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.correct_color = GREEN
         self.incorrect_color = RED
         self.setStyleSheet(f"color: {BLACK};")
-        self.generated_text.setStyleSheet(f"color: {BLUE};")
+        self.generated_text_html.setStyleSheet(f"color: {BLUE};")
         self.entered_text.setStyleSheet(f"color: {GREEN};")
         self.hint_label.setStyleSheet(f"color: {GRAY2};")
         self.stopwatch_label.setStyleSheet(f"color: {BLUE};")
@@ -488,60 +522,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.correct_color = GREEN
         self.incorrect_color = RED
         self.setStyleSheet(f"background-color: {GRAY1}; color: {WHITE};")
-        self.generated_text.setStyleSheet(f"color: {YELLOW};")
+        self.generated_text_html.setStyleSheet(f"color: {YELLOW};")
         self.entered_text.setStyleSheet(f"color: {GREEN};")
         self.hint_label.setStyleSheet(f"color: {GRAY2};")
         self.stopwatch_label.setStyleSheet(f"color: {YELLOW};")
         self.username_label.setStyleSheet(f"color: {YELLOW}")
         self.menubar.setStyleSheet(f"color: {WHITE};")
+        self.background.setPixmap(get_pixmap("dark"))
 
     # функция установки океанной темы
-    def set_ocean_theme(self):
-        self.correct_color = OCEAN_GREEN
-        self.incorrect_color = OCEAN_RED
-        self.setStyleSheet(f"background-color: {OCEAN_BLUE}; color: {WHITE};")
-        self.generated_text.setStyleSheet(f"color: {OCEAN_YELLOW};")
-        self.entered_text.setStyleSheet(f"color: {OCEAN_GREEN};")
-        self.hint_label.setStyleSheet(f"color: {GRAY2};")
-        self.stopwatch_label.setStyleSheet(f"color: {OCEAN_YELLOW};")
-        self.username_label.setStyleSheet(f"color: {OCEAN_YELLOW}")
-        self.menubar.setStyleSheet(f"color: {WHITE};")
-
-    # функция установки сиреневой темы
-    def set_pastel_theme(self):
-        self.correct_color = PASTEL_GREEN
-        self.incorrect_color = PASTEL_RED
-        self.setStyleSheet(f"background-color: {PASTEL_PURPLE}; color: {WHITE};")
-        self.generated_text.setStyleSheet(f"color: {PASTEL_BLUE};")
-        self.entered_text.setStyleSheet(f"color: {PASTEL_GREEN};")
-        self.hint_label.setStyleSheet(f"color: {GRAY2};")
-        self.stopwatch_label.setStyleSheet(f"color: {PASTEL_BLUE};")
-        self.username_label.setStyleSheet(f"color: {PASTEL_BLUE}")
-        self.menubar.setStyleSheet(f"color: {WHITE};")
-
-    # функция установки фиолетовой темы
-    def set_violet_theme(self):
+    def set_gradient_theme(self):
         self.correct_color = GREEN
         self.incorrect_color = RED
-        self.setStyleSheet(f"background-color: {PURPLE}; color:{WHITE};")
-        self.generated_text.setStyleSheet(f"color: {YELLOW};")
+        self.setStyleSheet(f"background-color: {GRAY1}; color: {WHITE};")
+        self.generated_text_html.setStyleSheet(f"color: {YELLOW};")
         self.entered_text.setStyleSheet(f"color: {GREEN};")
         self.hint_label.setStyleSheet(f"color: {GRAY2};")
         self.stopwatch_label.setStyleSheet(f"color: {YELLOW};")
         self.username_label.setStyleSheet(f"color: {YELLOW}")
         self.menubar.setStyleSheet(f"color: {WHITE};")
-
-    # функция установки лесной темы
-    def set_forest_theme(self):
-        self.correct_color = FOREST_LIGHT_GREEN
-        self.incorrect_color = FOREST_RED
-        self.setStyleSheet(f"background-color: {FOREST_GREEN}; color: {WHITE};")
-        self.generated_text.setStyleSheet(f"color: {FOREST_BROWN};")
-        self.entered_text.setStyleSheet(f"color: {FOREST_LIGHT_GREEN};")
-        self.hint_label.setStyleSheet(f"color: {GRAY2};")
-        self.stopwatch_label.setStyleSheet(f"color: {FOREST_BROWN};")
-        self.username_label.setStyleSheet(f"color: {FOREST_BROWN}")
-        self.menubar.setStyleSheet(f"color: {WHITE};")
+        self.background.setPixmap(get_pixmap("gradient"))
 
     # функция изменения сложности
     def change_difficulty(self, diff):
@@ -656,30 +656,7 @@ class ResultsDialog(QDialog, Ui_Dialog):
             bg_color, text_color = THEMES[theme]
             self.setStyleSheet(f"""background-color: {bg_color};
                                            color: {text_color}""")
-        except KeyError:
-            error_message = QMessageBox(self)
-            error_message.setIcon(QMessageBox.Critical)
-            error_message.setText(f"Такой темы {theme} не существует")
-            error_message.setWindowTitle("Смена темы отменена")
-            error_message.exec_()
-
-
-# окно для вывода информаций о проекте
-class AboutProjectWindow(QWidget, about.Ui_Form):
-    def __init__(self, theme):
-        super().__init__()  # конструктор родительского класса
-        # Вызываем метод для загрузки интерфейса из класса Ui_Form,
-        self.setupUi(self)
-        self.change_theme(theme)
-        self.setWindowTitle("О проекте")
-        self.label.setText("""Приложение для определения и тренировки скорости печати, \
-разработанное на языке Python с применением библиотеки PyQt5, имеющее широкий функционал и простой интерфейс""")
-
-    def change_theme(self, theme):
-        try:
-            bg_color, text_color = THEMES[theme]
-            self.setStyleSheet(f"""background-color: {bg_color};
-                                           color: {text_color}""")
+            self.background.setPixmap(get_pixmap(theme))
         except KeyError:
             error_message = QMessageBox(self)
             error_message.setIcon(QMessageBox.Critical)
