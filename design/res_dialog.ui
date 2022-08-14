@@ -29,7 +29,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">background-color:rgb(135, 135, 135)</string>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -72,7 +72,7 @@
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">color: rgb(202, 202, 202)</string>
       </property>
       <property name="text">
        <string>Отличный результат!</string>
@@ -87,7 +87,7 @@
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">color:rgb(202, 202, 202)</string>
       </property>
       <property name="text">
        <string>Символов в минуту: 250</string>
@@ -102,7 +102,7 @@
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">color:rgb(202, 202, 202)</string>
       </property>
       <property name="text">
        <string>Общее время:1:20</string>
@@ -111,6 +111,26 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="background">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>481</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../../Downloads/WhatsApp Image 2022-07-25 at 23.23.48.jpeg</pixmap>
+   </property>
+  </widget>
+  <zorder>background</zorder>
+  <zorder>button_box</zorder>
+  <zorder>image_label</zorder>
+  <zorder>verticalLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections>
