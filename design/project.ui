@@ -251,7 +251,7 @@ color: rgb(202, 202, 202);</string>
      <rect>
       <x>30</x>
       <y>10</y>
-      <width>51</width>
+      <width>371</width>
       <height>21</height>
      </rect>
     </property>
@@ -478,7 +478,7 @@ color: rgb(202, 202, 202);</string>
       <x>-30</x>
       <y>-30</y>
       <width>831</width>
-      <height>591</height>
+      <height>621</height>
      </rect>
     </property>
     <property name="text">
@@ -623,11 +623,7 @@ border-color: rgb(255, 255, 255);
      </property>
      <addaction name="dark_theme"/>
      <addaction name="light_theme"/>
-     <addaction name="ocean_theme"/>
-     <addaction name="pastel_theme"/>
-     <addaction name="violet_theme"/>
-     <addaction name="forest_theme"/>
-     <addaction name="glamour_theme"/>
+     <addaction name="gradient_theme"/>
     </widget>
     <widget class="QMenu" name="difficulty_setting">
      <property name="title">
@@ -644,28 +640,20 @@ border-color: rgb(255, 255, 255);
      <addaction name="register_user"/>
      <addaction name="login_user"/>
     </widget>
+    <widget class="QMenu" name="alphabet_setting">
+     <property name="title">
+      <string>Алфавит</string>
+     </property>
+     <addaction name="latin"/>
+     <addaction name="cyrillic"/>
+    </widget>
     <addaction name="theme_setting"/>
     <addaction name="difficulty_setting"/>
     <addaction name="user_setting"/>
     <addaction name="results_menu"/>
+    <addaction name="alphabet_setting"/>
    </widget>
    <addaction name="settings_menu"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::LeftToRight</enum>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
   </widget>
   <action name="dark_theme">
    <property name="text">
@@ -712,9 +700,9 @@ border-color: rgb(255, 255, 255);
     <string>Результаты</string>
    </property>
   </action>
-  <action name="ocean_theme">
+  <action name="gradient_theme">
    <property name="text">
-    <string>Океан</string>
+    <string>Градиент</string>
    </property>
   </action>
   <action name="pastel_theme">
@@ -745,6 +733,26 @@ border-color: rgb(255, 255, 255);
   <action name="about_project">
    <property name="text">
     <string>О проекте</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Кириллический</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>Латинский</string>
+   </property>
+  </action>
+  <action name="cyrillic">
+   <property name="text">
+    <string>Кириллический</string>
+   </property>
+  </action>
+  <action name="latin">
+   <property name="text">
+    <string>Латинский</string>
    </property>
   </action>
  </widget>
