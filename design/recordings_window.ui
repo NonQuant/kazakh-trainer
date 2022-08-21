@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>558</width>
+    <width>815</width>
     <height>300</height>
    </rect>
   </property>
@@ -19,9 +19,9 @@
   <widget class="QTableWidget" name="recordings_table">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>10</y>
-     <width>321</width>
+     <width>521</width>
      <height>261</height>
     </rect>
    </property>
@@ -33,7 +33,7 @@ background-color: white;</string>
   <widget class="QLabel" name="username_label">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>590</x>
      <y>10</y>
      <width>201</width>
      <height>81</height>
@@ -60,7 +60,7 @@ background-color: white;</string>
   <widget class="QPushButton" name="delete_btn">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>580</x>
      <y>110</y>
      <width>201</width>
      <height>41</height>
@@ -79,35 +79,13 @@ color: rgb(202, 202, 202)</string>
     <string>Удалить запись</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="convert_btn">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>170</y>
-     <width>201</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color:rgb(135, 135, 135);
-color: rgb(202, 202, 202)</string>
-   </property>
-   <property name="text">
-    <string>Конвертировать в csv</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="background">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>-10</x>
      <y>0</y>
-     <width>541</width>
-     <height>291</height>
+     <width>831</width>
+     <height>301</height>
     </rect>
    </property>
    <property name="text">
@@ -117,11 +95,32 @@ color: rgb(202, 202, 202)</string>
     <pixmap>../../../Downloads/WhatsApp Image 2022-07-25 at 23.17.49.jpeg</pixmap>
    </property>
   </widget>
+  <widget class="QLabel" name="average_result_label">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>180</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(202, 202, 202)</string>
+   </property>
+   <property name="text">
+    <string>Средний результат: </string>
+   </property>
+  </widget>
   <zorder>background</zorder>
   <zorder>recordings_table</zorder>
   <zorder>username_label</zorder>
   <zorder>delete_btn</zorder>
-  <zorder>convert_btn</zorder>
+  <zorder>average_result_label</zorder>
  </widget>
  <resources/>
  <connections/>
