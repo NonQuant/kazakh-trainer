@@ -1,5 +1,6 @@
 def convert_to_lat(text):
-    letters = {"а": "a",
+    letters = {"ия": "ia",
+               "а": "a",
                "ә": "ä",
                "б": "b",
                "в": "v",
