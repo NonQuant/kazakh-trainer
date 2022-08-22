@@ -37,7 +37,7 @@ def get_pixmap(theme):
     if theme == "dark":
         return QPixmap("data\\dark.jpeg")
     if theme == "gradient":
-        return QPixmap("data\\gradient3.jpg")
+        return QPixmap("data\\gradient.jpg")
     return QPixmap("data\\light.png")
 
 
