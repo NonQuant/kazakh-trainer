@@ -28,7 +28,7 @@ DATABASE = "data\\trainer_db.db"
 # correct, incorrect, main text, highlighting, background
 DARK = ["#0CF25D", "#D92525", "#97adac", "#02ccdb", "#383A3B"]
 
-LIGHT = ["#2ac780", "#FA1010", "#000000", "#7D77F6", "#FFFFFF"]
+LIGHT = ["#178a00", "#FA1010", "#000000", "#006eff", "#FFFFFF"]
 
 GRADIENT = ["#FFA900", "#DD4A48", "#F7E2E2", "#F7FA86", "#212324"]
 
@@ -457,21 +457,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.login_user.triggered.connect(self.login)
 
         # меню результатов
-        self.results_menu.triggered.connect(self.show_recordings)
+        self.results_menu_2.triggered.connect(self.show_recordings)
 
-        self.cyrillic.triggered.connect(self.change_alphabet)
+        self.tutorial.triggered.connect(self.show_recordings)
+
+        self.cyrillic.triggered.connect(lambda: self.change_alphabet("cyrillic"))
         self.latin.triggered.connect(self.change_alphabet)
 
     # функция показа окна результата
     def show_recordings(self):
+        print("koten")
         self.recordings_window = RecordingsWindow(self.user, self.theme)
         self.recordings_window.show()
 
-    def change_alphabet(self):
-        if self.alphabet == "lat":
+    def change_alphabet(self, alphabet):
+        if alphabet == "cyrillic":
             self.alphabet = "cyr"
-            return
-        self.alphabet = "lat"
+        else:
+            self.alphabet = "lat"
+        self.start_again()
 
     # функция смены темы приложения
     def change_theme(self, theme):
